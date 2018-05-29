@@ -1,0 +1,39 @@
+@charset "utf-8";
+
+html, body, div, span, object, iframe,
+p, blockquote, pre,
+a, abbr, address, big, cite, code,
+del, dfn, em, font, ins, q, s, samp,
+small, strike, strong, submenu, sup, tt, var,
+b, u, i, h1, h2, h3, h4, h5, h6,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, 
+table, caption, tbody, tfoot, thead, tr, th, td, 
+button
+{margin:0; padding:0; border:0;}
+
+img, button, input.type-image {border:0 none;}
+img {vertical-align:middle;}
+ol, ul, li {list-style:none;}
+blockquote, q {quotes:none;}
+ins {text-decoration:none;}
+del {text-decoration:line-through;}
+table {border-spacing:0;} 
+address,caption,cite,code,dfn,em,strong,th,var {font-style:normal;}
+input,textarea,select {vertical-align:middle; font-family:inherit;font-size:inherit;font-weight:inherit;}
+select{ -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+	}
+/* IE 10, 11의 네이티브 화살표 숨기기 */
+select::-ms-expand {display:none;}
+
+hr {display:none;}
+label {vertical-align:middle;}
+legend {visibility:hidden; display:none; height:0; width:0; font-size:0;}
+noscript{display:none;}
+caption{visibility:hidden; height:0; width:0; font-size:0;}
+
+a, a:link {text-decoration:none; cursor:pointer; color:#333;}
+a:visited {text-decoration:none;}
+a:hover {text-decoration:underline; cursor:pointer;}

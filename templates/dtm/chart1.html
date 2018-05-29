@@ -1,0 +1,423 @@
+﻿{% extends "dtm/layout.html" %}
+{% block title %}
+기초코드
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css"/>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+
+<style type='text/css'>
+	table.type02 {
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 0;
+		text-align: left;
+		line-height: 1.5;
+		border-top: 1px solid #ccc;
+		border-left: 1px solid #ccc;
+		margin : 20px 20px;
+	}
+	table.type02 th {
+		padding: 10px;
+		font-weight: bold;
+		border-right: 1px solid #ccc;
+		border-bottom: 1px solid #ccc;
+		border-top: 1px solid #fff;
+		border-left: 1px solid #fff;
+		background: #eee;
+		text-align : center;
+	}
+	table.type02 td {
+		padding: 10px;
+		vertical-align: top;
+		border-right: 1px solid #ccc;
+		border-bottom: 1px solid #ccc;
+		text-align : center;
+	}
+
+	.c3-text {fill: black !important; font-weight:bold !important; font-size:12px !important; }
+</style>
+
+<div id="content">
+    <div class="subCon">
+        <h2 class="h2_tit">보전건수/시간</h2>
+		<div id="chart1"></div>
+		<div style="margin: 20px 20px;">
+			<table class="type02">
+				<tr>
+					<th scope="row" style="width: 25%">사후보전 Total(건수)</th>
+					<th scope="row" style="width: 25%">월평균(건수)</th>
+					<th scope="row" style="width: 25%">Total(시간)</th>
+					<th scope="row" style="width: 25%">월평균(시간)</th>
+				</tr>
+				<tr>
+					<td>43.0</td>
+					<td>21.5</td>
+					<td>70.0</td>
+					<td>35.0</td>
+				</tr>
+				<tr>
+					<th scope="row">예방보전 Total(건수)</th>
+					<th scope="row">월평균(건수)</th>
+					<th scope="row">Total(시간)</th>
+					<th scope="row">월평균(시간)</th>
+				</tr>
+				<tr>
+					<td>151.0</td>
+					<td>75.5</td>
+					<td>132.7</td>
+					<td>66.3</td>
+				</tr>
+			</table>
+
+			<table class="type02">
+				<tr>
+					<th scope="row" colspan="2" width="15%">구분</th>
+					<th scope="row">1월</th>
+					<th scope="row">2월</th>
+					<th scope="row">3월</th>
+					<th scope="row">4월</th>
+					<th scope="row">5월</th>
+					<th scope="row">6월</th>
+					<th scope="row">7월</th>
+					<th scope="row">8월</th>
+					<th scope="row">9월</th>
+					<th scope="row">10월</th>
+					<th scope="row">11월</th>
+					<th scope="row">12월</th>
+				</tr>
+				<tr>
+					<th scope="row" rowspan="7">사후보전<br>정비건수</th>
+					<th scope="row">입고</th>
+					<td>5</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">분쇄</th>
+					<td>2</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">배합</th>
+					<td>4</td>
+					<td>4</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">성형</th>
+					<td>6</td>
+					<td>3</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">출하</th>
+					<td>4</td>
+					<td>7</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">지원</th>
+					<td>5</td>
+					<td>3</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">합계</th>
+					<td>26</td>
+					<td>17</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+
+			<table class="type02">
+				<tr>
+					<th scope="row" colspan="2" width="15%">구분</th>
+					<th scope="row">1월</th>
+					<th scope="row">2월</th>
+					<th scope="row">3월</th>
+					<th scope="row">4월</th>
+					<th scope="row">5월</th>
+					<th scope="row">6월</th>
+					<th scope="row">7월</th>
+					<th scope="row">8월</th>
+					<th scope="row">9월</th>
+					<th scope="row">10월</th>
+					<th scope="row">11월</th>
+					<th scope="row">12월</th>
+				</tr>
+				<tr>
+					<th scope="row" rowspan="7">사후보전<br>정비건수</th>
+					<th scope="row">입고</th>
+					<td>24.8</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">분쇄</th>
+					<td>4.0</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">배합</th>
+					<td>2.5</td>
+					<td>5.5</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">성형</th>
+					<td>12.3</td>
+					<td>3.5</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">출하</th>
+					<td>3.0</td>
+					<td>5.8</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">지원</th>
+					<td>6.0</td>
+					<td>2.5</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th scope="row">합계</th>
+					<td>52.7</td>
+					<td>17.3</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+
+		</div>
+		<div id="chart2"></div>
+		<div id="chart3"></div>
+
+		<script type="text/javascript">
+			var chart1 = c3.generate({
+				bindto: '#chart1'
+				,data: {
+					columns: [
+						['예방,개선건수', 15, 16, 36, 39, 24, 23]
+						,['사후보전건수', 5, 2, 8, 9, 11, 8]
+						,['예방,개선시간', 10.7, 11.5, 30.0, 41.3, 16.2, 23.0]
+						,['사후보전시간', 24.8, 4.0, 8.0, 15.8, 8.8, 8.5]
+					]
+					,types: {
+						'예방,개선건수': 'bar'
+						,'사후보전건수': 'bar'
+						,'예방,개선시간': 'line'
+						,'사후보전시간' : 'line'
+					}
+					,labels: true
+				}
+				,legend: {
+					position : 'inset',
+					inset: {
+					  anchor: 'top-right',
+					  x: 20,
+					  y: 10,
+					  step: 2
+					}
+				}
+				,axis : {
+					x: {
+						type: 'category',
+						categories: ['입고', '분쇄', '배합', '성형', '출하', '지원']
+					}
+
+				}
+
+			});
+
+			var chart2 = c3.generate({
+				bindto: '#chart2'
+				,data: {
+					columns: [
+						['건수', 15, 16, 36, 39, 24, 23]
+					]
+					,type: 'bar'
+					,labels: true
+				}
+				,bar: {
+					width: {
+						ratio: 0.3 // this makes bar width 50% of length between ticks
+					}
+					// or
+					//width: 100 // this makes bar width 100px
+				}
+				,legend: {
+				  show: false
+				}
+				,axis : {
+					x: {
+						type: 'category',
+						categories: ['입고', '분쇄', '배합', '성형', '출하', '지원']
+					}
+
+				}
+
+			});
+
+			var chart3 = c3.generate({
+				bindto: '#chart3'
+				,data: {
+					x : 'x'
+					, columns: [
+						['x', '2002-04-22', '2001-12-20', '2000-11-29', '2000-04-25','2000-01-30', '2000-01-08','1999-06-21', '1999-05-23','1998-12-09', '1998-11-25','1998-09-22', '1998-07-23', '1998-06-15'],
+						['건수', 122, 21, 214, 71, 78, 24, 95, 171, 14, 259, 20, 155, 47]
+					]
+					,types: {
+						'건수': 'bar'
+					}
+					,labels: true
+				}
+				,legend: {
+				  show: false
+				}
+				,axis: {
+					rotated: true
+					,x: {
+					  type: 'category'
+					}
+				}
+			});
+
+		</script>
+    </div>
+</div>
+{% endblock %}

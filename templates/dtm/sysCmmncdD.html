@@ -1,0 +1,170 @@
+{% extends "dtm/layout.html" %}
+{% block title %}
+기초코드
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+tui.Grid.setLanguage('ko');
+
+$(document).ready(function(){
+
+    //마스터 코드
+    var SysCmmncdM = JSON.parse('{{ SysCmmncdM | escapejs }}');
+
+    var grid = new tui.Grid({
+        el: $('#gridList'), // only required. other options are optional
+        showDummyRows: true,
+        editingEvent: 'click',
+        rowHeaders: ['checkbox', 'rowNum'],
+        columns: [
+        	{title: '회사ID', name: 'cmpny_id', hidden: true, editOptions: {type: 'text'}},
+        	{title: 'dcode_sn', name: 'dcode_sn', hidden: true, editOptions: {type: 'text'}},
+        	{title: '마스터코드', name: 'mcode_id', editOptions: {type: 'select', listItems: SysCmmncdM, useViewMode: true }},
+
+        	{title: '코드명', name: 'dcode_nm', width:150, editOptions: {type: 'text', useViewMode: true}},
+        	{title: '코드값1', name: 'dcode_val1', width:150, editOptions: {type: 'text', useViewMode: true}},
+        	{title: '코드값2', name: 'dcode_val2', width:150, editOptions: {type: 'text', useViewMode: true}},
+        	{title: '코드값3', name: 'dcode_val3', width:150, editOptions: {type: 'text', useViewMode: true}},
+        	{title: '정렬순서', name: 'ord_seq', editOptions: {type: 'text', useViewMode: true}}
+        ]
+
+    });
+
+
+    grid.use('Net', {
+        el: $("#search_form"),
+        perPage: 100,
+        api: {
+            readData: '/dtm/mmsImprmn_List/',
+            modifyData: '/dtm/mmsImprmn_Save/'
+        }
+    });
+
+    var net = grid.getAddOn('Net');
+
+    $("#btn_search").click(function(){
+        net.readData(1);
+        //net.readData(1, {"code_id":"A"} , true);
+    });
+
+    $("#btn_new").click(function(){
+        var row = {"cmpny_id":"HARIM"};
+        grid.appendRow(row);
+    });
+
+    $("#btn_save").click(function(){
+        var optionsOpt = {rowKeyOnly: false, checkedOnly: false};
+        net.request('modifyData', optionsOpt, true);
+    });
+
+    $("#btn_del").click(function(){
+        var rows = grid.getCheckedRows();
+        if (rows.length != 0) {
+            for (var i = 0; i < rows.length; i++) {
+                grid.removeRow(rows[i]);
+            }
+        }
+    });
+
+	grid.on('beforeRequest', function(data) {
+		// before sending a request
+	}).on('response', function(data) {
+		// when receiving response regardless of success/fail
+	}).on('successResponse', function(data) {
+		// when the result is true
+		net.readData(1);
+	}).on('failResponse', function(data) {
+		// when the result is false
+	}).on('errorResponse', function(data) {
+		// when an error occurred
+	});
+
+});
+
+function saveData(gMyGrid) {
+	var optionsOpt = {rowKeyOnly: false, checkedOnly: false};
+	var modifiedRowsInfo = gMyGrid.getModifiedRows(optionsOpt);
+	var createdRowsLength = modifiedRowsInfo.createdRows.length;
+	var updatedRowsLength = modifiedRowsInfo.updatedRows.length;
+	var deletedRowsLength = modifiedRowsInfo.deletedRows.length;
+
+	var resultJsonObject = new Object();
+	if (createdRowsLength != 0) {
+		var createdJsonArray = new Array();
+		for (var i = 0; i < createdRowsLength; i++) {
+			var rowKey = modifiedRowsInfo.createdRows[i];
+			var rowData = gMyGrid.getRowAt(gMyGrid.getIndexOfRow(rowKey, false), false);
+			createdJsonArray.push(rowData);
+		}
+		resultJsonObject.Created = createdJsonArray;
+	}
+	if (updatedRowsLength != 0) {
+		var updatedJsonArray = new Array();
+		for (var i = 0; i < updatedRowsLength; i++) {
+			var rowKey = modifiedRowsInfo.updatedRows[i];
+			var rowData = gMyGrid.getRowAt(gMyGrid.getIndexOfRow(rowKey, false), false);
+			updatedJsonArray.push(rowData);
+		}
+		resultJsonObject.Updated = updatedJsonArray;
+	}
+	if (deletedRowsLength != 0) {
+		var deletedJsonArray = new Array();
+		for (var i = 0; i < deletedRowsLength; i++) {
+			var idx = modifiedRowsInfo.deletedRows[i].idx;
+			deletedJsonArray.push(idx);
+		}
+		resultJsonObject.Deleted = deletedJsonArray;
+	}
+	var resultJsonString = JSON.stringify(resultJsonObject);
+	console.log("JsonString: " + resultJsonString);
+}
+</script>
+
+<div id="content">
+    <div class="subCon">
+        <h2 class="h2_tit">기초코드</h2>
+        <!-- S : 상단 버튼 -->
+        <div class="cbtn_wrap">
+            <div class="floatr">
+                <input class="cbtn cbtn_type1" id="btn_search" type="button" value="조회">
+                <input class="cbtn cbtn_type2" id="btn_new" type="button" value="신규">
+                <input class="cbtn cbtn_type2" id="btn_save" type="button" value="저장">
+                <input class="cbtn cbtn_type3" id="btn_del" type="button" value="삭제">
+            </div>
+        </div>
+        <!-- E : 상단 버튼 -->
+		<!-- S : 검색 -->
+		<div class="search_view">
+			<form id="search_form" name="search_form" method="post">
+            {%csrf_token  %}
+            {{search_form.as_p }}
+			<table class="search_tbl">
+				<caption>기초 Code 조회</caption>
+				<colgroup>
+					<col style="width:3%">
+					<col style="width:12%">
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">검색조건</th>
+						<td>
+							<input id="code_id" name="code_id" type="text" class="w30p" placeholder="검색조건">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<!-- E : 검색 -->
+
+        <!-- S : 리스트영역 -->
+        <div class="board_list mt30">
+            <div id="gridList" style="width:100%; "></div>
+        </div>
+        <!-- E : 리스트영역 -->
+
+
+    </div>
+</div>
+{% endblock %}

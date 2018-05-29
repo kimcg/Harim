@@ -1,0 +1,161 @@
+{% extends "dtm/layout.html" %}
+{% block title %}
+정비일지
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+tui.Grid.setLanguage('ko');
+
+$(document).ready(function(){
+
+    //설비, 부품
+    var MMS_EQP = JSON.parse('{{ MMS_EQP | escapejs }}');
+    var MMS_CMPNT = JSON.parse('{{ MMS_CMPNT | escapejs }}');
+
+    //보전구분, 작업구분, 고장상황, 고장원인
+    var MMS060 = JSON.parse('{{ MMS060 | escapejs }}');
+    var MMS030 = JSON.parse('{{ MMS030 | escapejs }}');
+    var MMS040 = JSON.parse('{{ MMS040 | escapejs }}');
+    var MMS050 = JSON.parse('{{ MMS050 | escapejs }}');
+    var MMS070 = JSON.parse('{{ MMS070 | escapejs }}');
+
+    var grid = new tui.Grid({
+        el: $('#gridList'), // only required. other options are optional
+        showDummyRows: true,
+        editingEvent: 'click',
+        rowHeaders: ['checkbox', 'rowNum'],
+        columns: [
+			{title: '회사ID', name: 'cmpny_id', hidden: true, editOptions: {type: 'text'}},
+			{title: 'imprmn_sn', name: 'imprmn_sn', hidden: true, editOptions: {type: 'text'}},
+			{title: '설비', name: 'eqp_sn',
+			 editOptions: {type: 'select', listItems: MMS_EQP, useViewMode: true },
+			 relations: [{ targetNames: ['cmpnt_sn', 'selectedValue'],
+						   listItems: function(value) {
+								return MMS_CMPNT[value];
+						   },
+						   disabled: function(value) {
+								return !(value);
+						   }
+					}]
+			},
+			{title: '부품', name: 'cmpnt_sn', editOptions: {type: 'select', listItems: [], useViewMode: true }},
+			{title: '보전구분', name: 'presvse_cd', editOptions: {type: 'select', listItems: MMS060, useViewMode: true }},
+			{title: '보전실행', name: 'presvexecut_cd', editOptions: {type: 'select', listItems: MMS060, useViewMode: true }},
+			{title: '작업부서', name: 'opertdept_cd', editOptions: {type: 'select', listItems: MMS070, useViewMode: true }},
+
+			{title: '점검일자', name: 'chck_de', editOptions: {type: 'text', useViewMode: true }, component: {name: 'datePicker', options: {format: 'yyyyMMdd'}}},
+			{title: '시작시간', name: 'begin_dt', editOptions: {type: 'text', useViewMode: true }, component: {name: 'datePicker', options: {format: 'HH:mm A', timepicker: true}}},
+			{title: '종료시간', name: 'end_dt', editOptions: {type: 'text', useViewMode: true }, component: {name: 'datePicker', options: {format: 'HH:mm A', timepicker: true}}},
+
+			{title: '점검여부', name: 'chckat_cd', editOptions: {type: 'select', listItems: [{ text: '예', value: 'Y' }, { text: '아니오', value: 'N' }], defaultValue: 'Y',useViewMode: true }},
+			{title: '정상여부', name: 'nrmltat_cd', editOptions: {type: 'select', listItems: [{ text: '예', value: 'Y' }, { text: '아니오', value: 'N' }], defaultValue: 'Y',useViewMode: true }},
+
+			{title: '처리주체', name: 'processdept_cd', editOptions: {type: 'select', listItems: MMS070, useViewMode: true }},
+			{title: '작업구분', name: 'opertse_cd', editOptions: {type: 'select', listItems: MMS030, useViewMode: true }},
+			{title: '고장상황', name: 'defectsittn_cd', editOptions: {type: 'select', listItems: MMS040, useViewMode: true }},
+			{title: '고장원인', name: 'defectcause_cd', editOptions: {type: 'select', listItems: MMS050, useViewMode: true }},
+			{title: '작업내용', name: 'opert_cn', width:150, whiteSpace: 'normal', editOptions: {type: 'text', useViewMode: true}}
+    	]
+
+    });
+
+    grid.use('Net', {
+        el: $("#search_form"),
+        perPage: 100,
+        api: {
+            readData: '/dtm/mmsImprmn_List/',
+            modifyData: '/dtm/mmsImprmn_Save/'
+        }
+    });
+
+    var net = grid.getAddOn('Net');
+
+    $("#btn_search").click(function(){
+        net.readData(1);
+        //net.readData(1, {"code_id":"A"} , true);
+    });
+
+    $("#btn_new").click(function(){
+        var row = {"cmpny_id":"HARIM"};
+        grid.appendRow(row);
+    });
+
+    $("#btn_save").click(function(){
+        var optionsOpt = {rowKeyOnly: false, checkedOnly: false};
+        net.request('modifyData', optionsOpt, true);
+    });
+
+    $("#btn_del").click(function(){
+        var rows = grid.getCheckedRows();
+        if (rows.length != 0) {
+            for (var i = 0; i < rows.length; i++) {
+                grid.removeRow(rows[i]);
+            }
+        }
+    });
+
+	grid.on('beforeRequest', function(data) {
+		// before sending a request
+	}).on('response', function(data) {
+		// when receiving response regardless of success/fail
+	}).on('successResponse', function(data) {
+		// when the result is true
+		net.readData(1);
+	}).on('failResponse', function(data) {
+		// when the result is false
+	}).on('errorResponse', function(data) {
+		// when an error occurred
+	});
+
+});
+
+</script>
+
+<div id="content">
+    <div class="subCon">
+        <h2 class="h2_tit">정비일지</h2>
+        <!-- S : 상단 버튼 -->
+        <div class="cbtn_wrap">
+            <div class="floatr">
+                <input class="cbtn cbtn_type1" id="btn_search" type="button" value="조회">
+                <input class="cbtn cbtn_type2" id="btn_new" type="button" value="신규">
+                <input class="cbtn cbtn_type2" id="btn_save" type="button" value="저장">
+                <input class="cbtn cbtn_type3" id="btn_del" type="button" value="삭제">
+            </div>
+        </div>
+        <!-- E : 상단 버튼 -->
+		<!-- S : 검색 -->
+		<div class="search_view">
+			<form id="search_form" name="search_form" method="post">
+            {%csrf_token  %}
+            {{search_form.as_p }}
+			<table class="search_tbl">
+				<caption>정비일지 조회</caption>
+				<colgroup>
+					<col style="width:3%">
+					<col style="width:12%">
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">검색조건</th>
+						<td>
+							<input id="code_id" name="code_id" type="text" class="w30p" placeholder="검색조건">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<!-- E : 검색 -->
+
+        <!-- S : 리스트영역 -->
+        <div class="board_list mt30">
+            <div id="gridList"></div>
+        </div>
+        <!-- E : 리스트영역 -->
+
+
+    </div>
+</div>
+{% endblock %}

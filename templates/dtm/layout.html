@@ -1,0 +1,148 @@
+{% load static %}
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="{% static 'css/font.css' %}"/>-->
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/default.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/admin.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/common.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/jquery-ui.min.css' %}">
+
+<!--tui	-->
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/tui/tui-grid.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/tui/tui-time-picker.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/tui/tui-date-picker.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'dtm/css/tui/tui-pagination.css' %}" />
+
+
+<!-- jquery -->
+<script src="{% static 'dtm/js/jquery-2.1.4.min.js' %}" ></script>
+<script src="{% static 'dtm/js/jquery-ui.min.js' %}" ></script>
+
+<!--tui	-->
+<script src="{% static 'dtm/js/tui/underscore-min.js' %}"></script>
+<script src="{% static 'dtm/js/tui/backbone-min.js' %}"></script>
+<script src="{% static 'dtm/js/tui/tui-code-snippet.min.js' %}"></script>
+<script src="{% static 'dtm/js/tui/tui-pagination.js' %}"></script>
+<script src="{% static 'dtm/js/tui/tui-time-picker.js' %}"></script>
+<script src="{% static 'dtm/js/tui/tui-date-picker.js' %}"></script>
+<script src="{% static 'dtm/js/tui/tui-grid.js' %}"></script>
+
+<script lang="javascript" src="{% static 'dtm/js/com.base.js' %}" ></script>
+<script lang="javascript" src="{% static 'dtm/js/com.form.js' %}" ></script>
+
+<script type="text/javaScript">
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // 이 HTTP 메서드는 CSRF 보호를 요청하지 않는다.
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+     }
+});
+
+</script>
+
+</head>
+<body>
+
+<div id="wrap">
+    <!-- S : 헤더 -->
+    <div class="header">
+        <h1>
+            <a href="./" style="height: 60px;"><img src="{% static 'dtm/images/harim_logo.png' %}" alt="로고" /></a>
+        </h1>
+
+        <div class="h_top">
+            <div class="location_path">
+    <!-- 			<div class="path">홈</div>
+                <div class="path">모집관리</div>
+                <div class="path lastpath">할머니지원서 관리</div> -->
+            </div>
+    <!-- 		<ul>
+                <li class="home">
+                    <a href="#"><img src="/resources/images/mng/btn_home.png" alt="홈으로"/></a>
+                </li>
+                <li class="logout">
+                    <a href="/logout"><img src="/resources/images/mng/btn_logout.png" alt="로그아웃"/></a>
+                </li>
+            </ul>	 -->
+        </div>
+    </div>
+    <!-- E : 헤더 -->
+
+	<!-- S : 로그인정보 -->
+	<div class="profile">
+		<div class="profile_photo">
+			<img src=" {% static 'dtm/images/noimg_profile.png' %}" class="no_profile" alt="프로필이미지" />
+		</div>
+		<strong class="p_name">관리자 (Admin)님</strong>
+		<!--<span>최초로그인 : 2017-05-23</span>-->
+	</div>
+	<!-- E : 로그인정보 -->
+
+	<!-- S : 사이드영역 -->
+	<div class="aside">
+		<div id="cssmenu">
+			<ul>
+				<li class='has-sub active'><a href='#' class="title">기초 Data 관리</a>
+					<ul>
+						<li><a href="{% url 'sysCmmncdD' %}">기초코드</a></li>
+					</ul>
+			   </li>
+			</ul>
+			<ul>
+				<li class='has-sub active'><a href='#' class="title">정비일지</a>
+					<ul>
+						<li><a href="{% url 'mmsImprmn' %}">정비일지</a></li>
+						<li><a href="{% url 'mmsImprmnForm' %}">정비일지(폼)</a></li>
+						<!--<li><a href="{% url 'mmsImprmnForm2' %}">정비일지(폼2)</a></li>-->
+					</ul>
+			   </li>
+			</ul>
+			<ul>
+				<li class='has-sub active'><a href='#' class="title">Data 분석</a>
+					<ul>
+						<li><a href="{% url 'chart' %}">보전건수/시간</a></li>
+					</ul>
+			   </li>
+			</ul>
+		</div>
+	</div>
+    <!-- E : 사이드영역 -->
+
+    <!-- S : content -->
+    {% block content %}{% endblock %}
+    <!-- E : content -->
+
+	<!-- S : 카피라이트 -->
+	<div id="footer">
+		<p class="copy">
+			COPYRIGHT 2018. Harim. ALL RIGHTS RESERVED.
+		</p>
+	</div>
+	<!-- E : 카피라이트 -->
+</div>
+</body>
+
+</html>

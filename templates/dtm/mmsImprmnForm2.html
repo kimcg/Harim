@@ -1,0 +1,89 @@
+{% extends "dtm/layout.html" %}
+{% block title %}
+정비일지
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+
+$(document).ready(function(){
+	var DatePicker = tui.DatePicker;
+
+	var datepicker = new DatePicker('#wrap_chck_de', {
+		date: new Date(),
+		language: 'ko',
+		input: {
+			element: '#id_chck_de',
+			format: 'yyyyMMdd'
+		}
+	});
+
+    $("#id_eqp_sn").change(function () {
+      var url = $("#mmsImprmnForm").attr("data-url");
+      var eqp_sn = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'eqp_sn': eqp_sn
+        },
+        success: function (data) {
+          $("#id_cmpnt_sn").html(data);
+        }
+      });
+    });
+
+	$("#id_eqp_sn").change();
+});
+
+</script>
+
+<div id="content">
+    <div class="subCon">
+        <!-- S : 상단 버튼 -->
+		<div class="cbtn_wrap">
+			<div class="floatl">
+				<h2 class="h2_tit">정비일지</h2>
+			</div>
+			<div class="floatr">
+				<input id="btnUdt" class="cbtn cbtn_type1" type="button" value="수정">
+			</div>
+		</div>
+        <!-- E : 상단 버튼 -->
+
+        <!-- S : 폼영역 -->
+        <div class="board_view">
+			<form id="mmsImprmnForm" name="mmsImprmnForm" method="post" data-url="{% url 'load_cmpnts' %}">
+				{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+				{% endfor %}
+				<table class="view_tbl">
+					<caption>정비일지</caption>
+					<colgroup>
+						<col style="width:10%;">
+						<col style="width:70%;">
+					</colgroup>
+					<tbody>
+					{% for field in form.visible_fields  %}
+						<tr>
+							<th scope="row">{{ field.label }}</th>
+							<td>
+								{% if field.name == 'chck_de' %}
+									<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+										{{ field }}
+										<span class="tui-ico-date"></span>
+									</div>
+									<div id="wrap_{{field.name }}" style="margin-top: -1px;"></div>
+								{% else %}
+									{{ field }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+ 			</form>
+        </div>
+        <!-- E : 폼영역 -->
+    </div>
+</div>
+{% endblock %}

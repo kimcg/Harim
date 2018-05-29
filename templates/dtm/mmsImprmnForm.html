@@ -1,0 +1,247 @@
+{% extends "dtm/layout.html" %}
+{% block title %}
+정비일지
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+var now_hh = time_format('h'), now_mm = time_format('m');
+var now_hhmm = now_hh+":"+now_mm;
+
+$(document).ready(function(){
+	var DatePicker = tui.DatePicker;
+	var TimePicker = tui.TimePicker;
+
+
+	var datepicker = new DatePicker('#wrap_chck_de', {
+		date: new Date(),
+		language: 'ko',
+		input: {
+			element: '#chck_de',
+			format: 'yyyyMMdd'
+		}
+	});
+
+	var begin_dt_timepicker = new TimePicker('#begin_dt_timepicker', {
+		initialHour : now_hh,
+		initialMinute : now_mm,
+		inputType: 'spinbox',
+		language: 'ko',
+        showMeridiem: false
+	});
+	begin_dt_timepicker.on('change', function() {
+		var begin_dt = begin_dt_timepicker.getHour() +':'+ begin_dt_timepicker.getMinute();
+		$("#begin_dt").val(begin_dt);
+	});
+
+	var end_dt_timepicker = new TimePicker('#end_dt_timepicker', {
+		initialHour : now_hh,
+		initialMinute : now_mm,
+		inputType: 'spinbox',
+		language: 'ko',
+        showMeridiem: false
+	});
+	end_dt_timepicker.on('change', function() {
+		var end_dt = end_dt_timepicker.getHour() +':'+ end_dt_timepicker.getMinute();
+		$("#end_dt").val(end_dt);
+	});
+
+	$("#btnSave").click(function(){
+		fn_FormSave("{% url 'mmsImprmn_Save' %}", "#mmsImprmnForm", save_callback);
+	});
+
+
+    $("#eqp_sn").change(function () {
+      var url = "{% url 'load_cmpnts' %}";
+      var eqp_sn = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'eqp_sn': eqp_sn
+        },
+        success: function (data) {
+          $("#cmpnt_sn").html(data);
+        }
+      });
+    });
+
+	$("#eqp_sn").change();
+	$("#begin_dt, #end_dt").val(now_hhmm);
+});
+
+function save_callback(){
+	fn_FormClear("#mmsImprmnForm");
+
+	$("#cmpny_id").val("HARIM");
+	$("#begin_dt, #end_dt").val(now_hhmm);
+}
+
+</script>
+
+<div id="content">
+    <div class="subCon">
+        <!-- S : 상단 버튼 -->
+		<div class="cbtn_wrap">
+			<div class="floatl">
+				<h2 class="h2_tit">정비일지</h2>
+			</div>
+			<div class="floatr">
+				<input id="btnSave" class="cbtn cbtn_type1" type="button" value="저장">
+			</div>
+		</div>
+        <!-- E : 상단 버튼 -->
+
+        <!-- S : 폼영역 -->
+        <div class="board_view">
+			<form id="mmsImprmnForm" name="mmsImprmnForm" method="post" data-url="{% url 'mmsImprmn_Save' %}">
+
+				<input type="hidden" name="cmpny_id" id="cmpny_id" value="HARIM">
+				<input type="hidden" name="begin_dt" maxlength="20" id="begin_dt">
+				<input type="hidden" name="end_dt" maxlength="20" id="end_dt">
+
+				<table class="view_tbl">
+					<caption>정비일지</caption>
+					<colgroup>
+						<col style="width:10%;">
+						<col style="width:20%;">
+						<col style="width:10%;">
+						<col style="width:20%;">
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">설비</th>
+							<td>
+								<select name="eqp_sn" id="eqp_sn" class="w40p" >
+								{% for EQP in MMS_EQP %}
+									<option value="{{ EQP.eqp_sn }}">{{ EQP.eqp_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+							<th scope="row">부품</th>
+							<td>
+								<select name="cmpnt_sn" id="cmpnt_sn" class="w40p">
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">보전구분</th>
+							<td>
+								<select name="presvse_cd" id="presvse_cd" class="w40p">
+								{% for MMS060 in MMS060S %}
+									<option value="{{ MMS060.dcode_sn }}">{{ MMS060.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+							<th scope="row">보전실행</th>
+							<td>
+								<select name="presvexecut_cd" id="presvexecut_cd" class="w40p">
+								{% for MMS060 in MMS060S %}
+									<option value="{{ MMS060.dcode_sn }}">{{ MMS060.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">작업부서</th>
+							<td>
+								<select name="opertdept_cd" id="opertdept_cd" class="w40p">
+								{% for MMS070 in MMS070S %}
+									<option value="{{ MMS070.dcode_sn }}">{{ MMS070.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+							<th scope="row">작업자</th>
+							<td>
+								<input type="text" name="opert_user_id" maxlength="20" id="opert_user_id" class="w40p">
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">점검여부</th>
+							<td>
+								<select name="chckat_cd" id="chckat_cd" class="w40p">
+									<option value="Y">예</option>
+								    <option value="N">아니요</option>
+								</select>
+							</td>
+							<th scope="row">정상여부</th>
+							<td>
+								<select name="nrmltat_cd" id="nrmltat_cd" class="w40p">
+									<option value="Y">예</option>
+								    <option value="N">아니요</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">처리주체</th>
+							<td colspan="3">
+								<select name="processdept_cd" id="processdept_cd" class="w16p">
+								{% for MMS070 in MMS070S %}
+									<option value="{{ MMS070.dcode_sn }}">{{ MMS070.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">작업구분</th>
+							<td colspan="3">
+								<select name="opertse_cd" id="opertse_cd" class="w16p">
+								{% for MMS030 in MMS030S %}
+									<option value="{{ MMS030.dcode_sn }}">{{ MMS030.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">고장상황</th>
+							<td>
+								<select name="defectsittn_cd" id="defectsittn_cd" class="w40p">
+								{% for MMS040 in MMS040S %}
+									<option value="{{ MMS040.dcode_sn }}">{{ MMS040.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+							<th scope="row">고장원인</th>
+							<td>
+								<select name="defectcause_cd" id="defectcause_cd" class="w40p">
+								{% for MMS050 in MMS050S %}
+									<option value="{{ MMS050.dcode_sn }}">{{ MMS050.dcode_nm }}</option>
+								{% endfor %}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">점검일자</th>
+							<td>
+								<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+									<input type="text" id="chck_de" name="chck_de" aria-label="Date-Time">
+									<span class="tui-ico-date"></span>
+								</div>
+								<div id="wrap_chck_de" style="margin-top: -1px;"></div>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">작업내용</th>
+							<td colspan="3">
+								<textarea name="opert_cn" cols="40" rows="10" id="opert_cn" class="w40p"></textarea>
+							</td>
+						</tr>
+						<tr style="height:80px;">
+							<th scope="row">시작일시</th>
+							<td>
+								<div id="begin_dt_timepicker" class="w50p"></div>
+							</td>
+							<th scope="row">종료일시</th>
+							<td>
+								<div id="end_dt_timepicker" class="w50p"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+ 			</form>
+        </div>
+        <!-- E : 폼영역 -->
+    </div>
+</div>
+{% endblock %}
